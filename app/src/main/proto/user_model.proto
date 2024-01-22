@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+option java_package = "com.esaudev.expensetracker.proto";
+option java_multiple_files = true;
+
+message UserModel {
+  string name = 1;
+}

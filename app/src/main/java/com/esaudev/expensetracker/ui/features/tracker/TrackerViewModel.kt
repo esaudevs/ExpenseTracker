@@ -8,14 +8,11 @@ import com.esaudev.expensetracker.domain.repository.UserRepository
 import com.esaudev.expensetracker.ext.monthValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -80,11 +77,10 @@ class TrackerViewModel @Inject constructor(
             }
         }
     }
-
 }
 
 data class ExpenseQueryState(
-    val date: LocalDateTime = LocalDateTime.now(),
+    val date: LocalDateTime = LocalDateTime.now()
 )
 
 sealed interface TrackerUiState {

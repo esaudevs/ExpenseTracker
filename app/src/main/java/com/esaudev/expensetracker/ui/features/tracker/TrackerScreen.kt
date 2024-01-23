@@ -40,7 +40,6 @@ import com.esaudev.expensetracker.ui.components.ExpenseItem
 import com.esaudev.expensetracker.ui.components.MonthSelector
 import com.esaudev.expensetracker.ui.components.MonthlyExpenses
 import com.esaudev.expensetracker.ui.features.expenses.CreateExpenseDialog
-import java.time.LocalDateTime
 
 @Composable
 fun TrackerRoute(

@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +29,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -45,14 +47,29 @@ fun TrackerRoute(
     trackerViewModel: TrackerViewModel = hiltViewModel()
 ) {
     val uiState by trackerViewModel.uiState.collectAsStateWithLifecycle()
+    val queryState by trackerViewModel.queryState.collectAsStateWithLifecycle()
 
-    TrackerScreen(uiState = uiState)
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    LaunchedEffect(key1 = lifecycleOwner.lifecycle) {
+        trackerViewModel.getExpensesByQuery()
+    }
+
+    TrackerScreen(
+        uiState = uiState,
+        queryState = queryState,
+        onNextMonth = trackerViewModel::onNextMonth,
+        onPreviousMonth = trackerViewModel::onPreviousMonth
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrackerScreen(
-    uiState: TrackerViewModel.TrackerUiState
+    uiState: TrackerUiState,
+    queryState: ExpenseQueryState,
+    onNextMonth: () -> Unit,
+    onPreviousMonth: () -> Unit
 ) {
     var showCreateExpenseDialog by rememberSaveable {
         mutableStateOf(false)
@@ -81,16 +98,17 @@ fun TrackerScreen(
     ) { paddingValues ->
 
         when (uiState) {
-            is TrackerViewModel.TrackerUiState.Loading -> {
+            is TrackerUiState.Loading -> {
                 TrackerLoading()
             }
 
-            is TrackerViewModel.TrackerUiState.WithContent -> {
+            is TrackerUiState.WithContent -> {
                 TrackerContent(
                     modifier = Modifier.padding(paddingValues),
                     uiState = uiState,
-                    onNextMonth = {},
-                    onPreviousMonth = {}
+                    queryState = queryState,
+                    onNextMonth = onNextMonth,
+                    onPreviousMonth = onPreviousMonth
                 )
             }
         }
@@ -100,7 +118,8 @@ fun TrackerScreen(
 @Composable
 fun TrackerContent(
     modifier: Modifier = Modifier,
-    uiState: TrackerViewModel.TrackerUiState.WithContent,
+    uiState: TrackerUiState.WithContent,
+    queryState: ExpenseQueryState,
     onNextMonth: () -> Unit,
     onPreviousMonth: () -> Unit
 ) {
@@ -116,7 +135,10 @@ fun TrackerContent(
     ) {
         TrackerHeader(
             userName = uiState.userName,
-            monthlyExpenses = uiState.monthlyExpenses
+            monthlyExpenses = uiState.monthlyExpenses,
+            queryState = queryState,
+            onNextMonth = onNextMonth,
+            onPreviousMonth = onPreviousMonth
         )
 
         if (showExpenseList.value) {
@@ -156,7 +178,10 @@ fun TrackerContent(
 @Composable
 private fun TrackerHeader(
     userName: String,
-    monthlyExpenses: String
+    queryState: ExpenseQueryState,
+    monthlyExpenses: String,
+    onNextMonth: () -> Unit,
+    onPreviousMonth: () -> Unit
 ) {
     Column(
         modifier = Modifier.padding(
@@ -172,11 +197,9 @@ private fun TrackerHeader(
 
         MonthSelector(
             modifier = Modifier.fillMaxWidth(),
-            date = LocalDateTime.of(2024, 1, 1, 0, 0),
-            onPreviousMonth = {
-            },
-            onNextMonth = {
-            }
+            date = queryState.date,
+            onPreviousMonth = onPreviousMonth,
+            onNextMonth = onNextMonth
         )
 
         Spacer(modifier = Modifier.height(4.dp))

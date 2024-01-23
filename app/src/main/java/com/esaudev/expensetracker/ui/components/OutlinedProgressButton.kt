@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.esaudev.expensetracker.ui.theme.ExpenseTrackerTheme
 
 @Composable
-fun ProgressButton(
+fun OutlinedProgressButton(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
     text: String,
@@ -30,7 +30,7 @@ fun ProgressButton(
         modifier = modifier.wrapContentSize(),
         contentAlignment = Alignment.Center
     ) {
-        Button(
+        OutlinedButton(
             modifier = modifier,
             onClick = onClick,
             enabled = !isLoading,
@@ -65,7 +65,7 @@ fun ProgressButton(
 private fun ProgressButtonLoadingPreview() {
     ExpenseTrackerTheme {
         Surface {
-            ProgressButton(
+            OutlinedProgressButton(
                 modifier = Modifier.fillMaxWidth(),
                 isLoading = true,
                 text = "Button text",
@@ -81,7 +81,7 @@ private fun ProgressButtonLoadingPreview() {
 private fun ProgressButtonNoLoadingPreview() {
     ExpenseTrackerTheme {
         Surface {
-            ProgressButton(
+            OutlinedProgressButton(
                 isLoading = false,
                 text = "Button text",
                 onClick = {}

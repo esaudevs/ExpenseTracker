@@ -77,6 +77,12 @@ class TrackerViewModel @Inject constructor(
             }
         }
     }
+
+    fun onDeleteExpense(id: String) {
+        viewModelScope.launch {
+            expenseRepository.deleteById(id)
+        }
+    }
 }
 
 data class ExpenseQueryState(

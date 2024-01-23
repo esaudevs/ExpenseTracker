@@ -1,4 +1,4 @@
-package com.esaudev.expensetracker.ui.features.expenses
+package com.esaudev.expensetracker.ui.features.expenses.create
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

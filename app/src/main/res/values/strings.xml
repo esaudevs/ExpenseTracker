@@ -22,5 +22,9 @@
     <string name="create_expense__create">Create</string>
     <string name="create_expense__empty_concept_error">Concept should not be empty</string>
     <string name="create_expense__empty_amount_error">Enter a valid amount to continue</string>
+    
+    <string name="expense_options__title">Expense options</string>
+    <string name="expense_options__edit">Edit</string>
+    <string name="expense_options__delete">Delete</string>
 
 </resources>

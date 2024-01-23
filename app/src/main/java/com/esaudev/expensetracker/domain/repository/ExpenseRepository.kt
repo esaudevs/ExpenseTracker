@@ -10,4 +10,6 @@ interface ExpenseRepository {
     fun observeSumByMonth(monthValue: String): Flow<String>
 
     suspend fun upsert(expense: Expense)
+
+    suspend fun deleteById(id: String)
 }

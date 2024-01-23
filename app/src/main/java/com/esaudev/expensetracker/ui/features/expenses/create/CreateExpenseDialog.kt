@@ -1,4 +1,4 @@
-package com.esaudev.expensetracker.ui.features.expenses
+package com.esaudev.expensetracker.ui.features.expenses.create
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

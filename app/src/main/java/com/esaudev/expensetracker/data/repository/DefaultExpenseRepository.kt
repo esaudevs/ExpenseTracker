@@ -5,8 +5,10 @@ import com.esaudev.expensetracker.data.local.database.model.toExpense
 import com.esaudev.expensetracker.data.local.database.model.toExpenseEntity
 import com.esaudev.expensetracker.domain.model.Expense
 import com.esaudev.expensetracker.domain.repository.ExpenseRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class DefaultExpenseRepository @Inject constructor(
@@ -22,6 +24,12 @@ class DefaultExpenseRepository @Inject constructor(
 
     override suspend fun upsert(expense: Expense) {
         expenseDao.upsert(expense.toExpenseEntity())
+    }
+
+    override suspend fun deleteById(id: String) {
+        withContext(Dispatchers.IO) {
+            expenseDao.deleteById(id)
+        }
     }
 
     override fun observeSumByMonth(monthValue: String): Flow<String> {

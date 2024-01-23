@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,10 +35,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.esaudev.expensetracker.R
+import com.esaudev.expensetracker.domain.model.Expense
 import com.esaudev.expensetracker.ui.components.ExpenseItem
 import com.esaudev.expensetracker.ui.components.MonthSelector
 import com.esaudev.expensetracker.ui.components.MonthlyExpenses
-import com.esaudev.expensetracker.ui.features.expenses.CreateExpenseDialog
+import com.esaudev.expensetracker.ui.features.expenses.create.CreateExpenseDialog
+import com.esaudev.expensetracker.ui.features.expenses.options.ExpenseOptionsBottomSheet
 
 @Composable
 fun TrackerRoute(
@@ -58,24 +59,39 @@ fun TrackerRoute(
         uiState = uiState,
         queryState = queryState,
         onNextMonth = trackerViewModel::onNextMonth,
-        onPreviousMonth = trackerViewModel::onPreviousMonth
+        onPreviousMonth = trackerViewModel::onPreviousMonth,
+        onDeleteClick = trackerViewModel::onDeleteExpense
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrackerScreen(
     uiState: TrackerUiState,
     queryState: ExpenseQueryState,
     onNextMonth: () -> Unit,
-    onPreviousMonth: () -> Unit
+    onPreviousMonth: () -> Unit,
+    onDeleteClick: (String) -> Unit
 ) {
-    var showCreateExpenseDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
+    var showCreateExpenseDialog by rememberSaveable { mutableStateOf(false) }
+    var openOptionSheetRequest by rememberSaveable { mutableStateOf(Pair(false, "")) }
 
     if (showCreateExpenseDialog) {
         CreateExpenseDialog(onDismiss = { showCreateExpenseDialog = false })
+    }
+
+    if (openOptionSheetRequest.first) {
+        ExpenseOptionsBottomSheet(
+            expenseId = openOptionSheetRequest.second,
+            onDismissRequest = {
+                openOptionSheetRequest = Pair(false, "")
+            },
+            onEditClick = {
+            },
+            onDeleteClick = {
+                openOptionSheetRequest = Pair(false, "")
+                onDeleteClick(it)
+            }
+        )
     }
 
     Scaffold(
@@ -107,7 +123,10 @@ fun TrackerScreen(
                     uiState = uiState,
                     queryState = queryState,
                     onNextMonth = onNextMonth,
-                    onPreviousMonth = onPreviousMonth
+                    onPreviousMonth = onPreviousMonth,
+                    onExpenseClick = {
+                        openOptionSheetRequest = Pair(true, it.id)
+                    }
                 )
             }
         }
@@ -120,7 +139,8 @@ fun TrackerContent(
     uiState: TrackerUiState.WithContent,
     queryState: ExpenseQueryState,
     onNextMonth: () -> Unit,
-    onPreviousMonth: () -> Unit
+    onPreviousMonth: () -> Unit,
+    onExpenseClick: (Expense) -> Unit
 ) {
     val showExpenseList = remember {
         derivedStateOf { uiState.expenses.isNotEmpty() }
@@ -148,7 +168,10 @@ fun TrackerContent(
                 itemsIndexed(uiState.expenses, key = { _, item ->
                     item.id
                 }) { index, expense ->
-                    ExpenseItem(concept = expense.concept, amount = expense.amount)
+                    ExpenseItem(
+                        expense = expense,
+                        onClick = onExpenseClick
+                    )
 
                     if (index != uiState.expenses.lastIndex) {
                         Spacer(modifier = Modifier.height(6.dp))

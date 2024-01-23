@@ -164,7 +164,7 @@ private fun TrackerHeader(
 
         MonthlyExpenses(amount = monthlyExpenses)
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = stringResource(id = R.string.tracker__expenses_title),

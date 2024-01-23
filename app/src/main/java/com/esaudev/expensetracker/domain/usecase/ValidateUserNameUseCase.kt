@@ -27,9 +27,9 @@ class ValidateUserNameUseCase @Inject constructor() {
             errorMessage = null
         )
     }
-
-    data class ValidationResult(
-        val successful: Boolean,
-        val errorMessage: UiText? = null
-    )
 }
+
+data class ValidationResult(
+    val successful: Boolean,
+    val errorMessage: UiText? = null
+)

@@ -19,5 +19,7 @@
     <string name="create_expense__concept_label">Concept</string>
     <string name="create_expense__amount_label">Amount</string>
     <string name="create_expense__create">Create</string>
+    <string name="create_expense__empty_concept_error">Concept should not be empty</string>
+    <string name="create_expense__empty_amount_error">Enter a valid amount to continue</string>
 
 </resources>

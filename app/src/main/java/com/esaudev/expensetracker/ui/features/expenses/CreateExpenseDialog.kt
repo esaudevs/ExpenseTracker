@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.esaudev.expensetracker.R
 import com.esaudev.expensetracker.ui.components.ProgressButton
 import com.esaudev.expensetracker.ui.helpers.ObserveAsEvents
+import com.esaudev.expensetracker.util.UiText
 import com.esaudev.expensetracker.util.UiTopLevelEvent
 
 @Composable
@@ -86,6 +87,8 @@ fun CreateExpenseDialog(
             CreateExpenseDialogContent(
                 amountValue = createExpenseUiState.amount,
                 conceptValue = createExpenseUiState.concept,
+                amountError = createExpenseUiState.amountError,
+                conceptError = createExpenseUiState.conceptError,
                 onAmountChange = onAmountChange,
                 onConceptChange = onConceptChange
             )
@@ -105,6 +108,8 @@ fun CreateExpenseDialog(
 fun CreateExpenseDialogContent(
     amountValue: String,
     conceptValue: String,
+    amountError: UiText? = null,
+    conceptError: UiText? = null,
     onAmountChange: (String) -> Unit,
     onConceptChange: (String) -> Unit
 ) {
@@ -140,6 +145,12 @@ fun CreateExpenseDialogContent(
                     text = "MXN",
                     style = MaterialTheme.typography.bodyMedium
                 )
+            },
+            isError = amountError != null,
+            supportingText = {
+                if (amountError != null) {
+                    Text(text = amountError.asString())
+                }
             }
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -157,7 +168,13 @@ fun CreateExpenseDialogContent(
                 onNext = {
                     keyboardController?.hide()
                 }
-            )
+            ),
+            isError = conceptError != null,
+            supportingText = {
+                if (conceptError != null) {
+                    Text(text = conceptError.asString())
+                }
+            }
         )
     }
 }

@@ -10,6 +10,7 @@
     <string name="next_month_content_desc">Next month icon</string>
 
     <string name="tracker__welcome_message">Welcome, %1$s</string>
+    <string name="tracker__expenses_title">Expenses</string>
     <string name="tracker__monthly_expenses_label">Monthly expenses</string>
     <string name="tracker__monthly_expenses_amount">$ %1$s MXN</string>
     <string name="tracker__create_expense_icon_content_desc">Create expense button</string>

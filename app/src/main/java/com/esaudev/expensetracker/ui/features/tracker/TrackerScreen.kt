@@ -2,17 +2,21 @@ package com.esaudev.expensetracker.ui.features.tracker
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.esaudev.expensetracker.R
+import com.esaudev.expensetracker.domain.model.Expense
+import com.esaudev.expensetracker.ui.components.ExpenseItem
 import com.esaudev.expensetracker.ui.components.MonthSelector
 import com.esaudev.expensetracker.ui.components.MonthlyExpenses
 import com.esaudev.expensetracker.ui.features.expenses.CreateExpenseDialog
@@ -71,17 +77,18 @@ fun TrackerScreen(
             )
         }
     ) { paddingValues ->
+
         when (uiState) {
             is TrackerViewModel.TrackerUiState.Loading -> {
-                TrackerLoading(
-                    modifier = Modifier.padding(paddingValues)
-                )
+                TrackerLoading()
             }
 
             is TrackerViewModel.TrackerUiState.WithContent -> {
                 TrackerContent(
                     modifier = Modifier.padding(paddingValues),
-                    uiState = uiState,
+                    userName = uiState.userName,
+                    monthlyExpenses = uiState.monthlyExpenses,
+                    expenses = uiState.expenses,
                     onNextMonth = {},
                     onPreviousMonth = {}
                 )
@@ -93,24 +100,60 @@ fun TrackerScreen(
 @Composable
 fun TrackerContent(
     modifier: Modifier = Modifier,
-    uiState: TrackerViewModel.TrackerUiState.WithContent,
+    userName: String,
+    monthlyExpenses: String,
+    expenses: List<Expense>,
     onNextMonth: () -> Unit,
     onPreviousMonth: () -> Unit
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
-        Text(text = stringResource(id = R.string.tracker__welcome_message, uiState.userName))
+        TrackerHeader(
+            userName = userName,
+            monthlyExpenses = monthlyExpenses
+        )
+
+        LazyColumn(
+            modifier = Modifier,
+            contentPadding = PaddingValues(16.dp)
+        ) {
+            itemsIndexed(expenses, key = { _, item ->
+                item.id
+            }) { index, expense ->
+                ExpenseItem(concept = expense.concept, amount = expense.amount)
+
+                if (index != expenses.lastIndex) {
+                    Spacer(modifier = Modifier.height(6.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TrackerHeader(
+    userName: String,
+    monthlyExpenses: String
+) {
+    Column(
+        modifier = Modifier.padding(
+            start = 16.dp,
+            end = 16.dp,
+            top = 16.dp,
+            bottom = 6.dp
+        )
+    ) {
+        Text(text = stringResource(id = R.string.tracker__welcome_message, userName))
 
         Spacer(modifier = Modifier.height(2.dp))
 
         MonthSelector(
             modifier = Modifier.fillMaxWidth(),
-            date = LocalDateTime.now(),
+            date = LocalDateTime.of(2024, 1, 1, 0, 0),
             onPreviousMonth = {
             },
             onNextMonth = {
@@ -119,7 +162,14 @@ fun TrackerContent(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        MonthlyExpenses(amount = uiState.monthlyExpenses)
+        MonthlyExpenses(amount = monthlyExpenses)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = stringResource(id = R.string.tracker__expenses_title),
+            style = MaterialTheme.typography.titleMedium
+        )
     }
 }
 

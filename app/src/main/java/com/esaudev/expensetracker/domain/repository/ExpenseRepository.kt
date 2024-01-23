@@ -7,5 +7,7 @@ interface ExpenseRepository {
 
     fun observeByMonth(monthValue: String): Flow<List<Expense>>
 
+    fun observeSumByMonth(monthValue: String): Flow<String>
+
     suspend fun upsert(expense: Expense)
 }

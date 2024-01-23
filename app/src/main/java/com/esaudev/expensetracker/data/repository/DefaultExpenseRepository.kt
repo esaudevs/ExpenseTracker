@@ -23,4 +23,10 @@ class DefaultExpenseRepository @Inject constructor(
     override suspend fun upsert(expense: Expense) {
         expenseDao.upsert(expense.toExpenseEntity())
     }
+
+    override fun observeSumByMonth(monthValue: String): Flow<String> {
+        return expenseDao.observeSumByMonth(monthValue = monthValue).map { amount ->
+            amount.toString()
+        }
+    }
 }

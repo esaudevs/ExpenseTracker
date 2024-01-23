@@ -28,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.esaudev.expensetracker.R
 import com.esaudev.expensetracker.ui.components.MonthSelector
+import com.esaudev.expensetracker.ui.components.MonthlyExpenses
 import com.esaudev.expensetracker.ui.features.expenses.CreateExpenseDialog
 import java.time.LocalDateTime
 
@@ -115,6 +116,10 @@ fun TrackerContent(
             onNextMonth = {
             }
         )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        MonthlyExpenses(amount = uiState.monthlyExpenses)
     }
 }
 

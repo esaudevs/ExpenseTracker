@@ -5,4 +5,18 @@
     <string name="onboarding__continue">Continue</string>
     <string name="onboarding__empty_name_string">Name should not be empty</string>
     <string name="onboarding__name_bad_formatted">Name should not contains special characters</string>
+
+    <string name="previous_month_content_desc">Previous month icon</string>
+    <string name="next_month_content_desc">Next month icon</string>
+
+    <string name="tracker__welcome_message">Welcome, %1$s</string>
+    <string name="tracker__monthly_expenses_label">Monthly expenses</string>
+    <string name="tracker__monthly_expenses_amount">$ %1$s MXN</string>
+    <string name="tracker__create_expense_icon_content_desc">Create expense button</string>
+
+    <string name="create_expense__title_label">Create a expense</string>
+    <string name="create_expense__concept_label">Concept</string>
+    <string name="create_expense__amount_label">Amount</string>
+    <string name="create_expense__create">Create</string>
+
 </resources>

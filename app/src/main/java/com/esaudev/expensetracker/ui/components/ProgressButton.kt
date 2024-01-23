@@ -1,7 +1,6 @@
 package com.esaudev.expensetracker.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.esaudev.expensetracker.ui.theme.ExpenseTrackerTheme
 
 @Composable
 fun ProgressButton(
@@ -25,8 +25,7 @@ fun ProgressButton(
     onClick: () -> Unit
 ) {
     Box(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.background),
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         Button(
@@ -61,12 +60,14 @@ fun ProgressButton(
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun ProgressButtonLoadingPreview() {
-    Surface {
-        ProgressButton(
-            isLoading = true,
-            text = "Button text",
-            onClick = {}
-        )
+    ExpenseTrackerTheme {
+        Surface {
+            ProgressButton(
+                isLoading = true,
+                text = "Button text",
+                onClick = {}
+            )
+        }
     }
 }
 
@@ -74,11 +75,13 @@ private fun ProgressButtonLoadingPreview() {
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun ProgressButtonNoLoadingPreview() {
-    Surface {
-        ProgressButton(
-            isLoading = false,
-            text = "Button text",
-            onClick = {}
-        )
+    ExpenseTrackerTheme {
+        Surface {
+            ProgressButton(
+                isLoading = false,
+                text = "Button text",
+                onClick = {}
+            )
+        }
     }
 }

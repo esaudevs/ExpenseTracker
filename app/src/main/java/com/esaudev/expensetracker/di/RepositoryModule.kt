@@ -1,6 +1,8 @@
 package com.esaudev.expensetracker.di
 
+import com.esaudev.expensetracker.data.repository.DefaultExpenseRepository
 import com.esaudev.expensetracker.data.repository.ProtoUserRepository
+import com.esaudev.expensetracker.domain.repository.ExpenseRepository
 import com.esaudev.expensetracker.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -15,4 +17,9 @@ abstract class RepositoryModule {
     abstract fun bindsUserRepository(
         protoUserRepository: ProtoUserRepository
     ): UserRepository
+
+    @Binds
+    abstract fun bindsExpenseRepository(
+        defaultExpenseRepository: DefaultExpenseRepository
+    ): ExpenseRepository
 }

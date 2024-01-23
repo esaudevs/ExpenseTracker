@@ -1,7 +1,7 @@
 package com.esaudev.expensetracker.data.repository
 
 import android.content.Context
-import com.esaudev.expensetracker.data.proto.userModelDataStore
+import com.esaudev.expensetracker.data.local.proto.userModelDataStore
 import com.esaudev.expensetracker.domain.repository.UserRepository
 import com.esaudev.expensetracker.proto.UserModel
 import com.esaudev.expensetracker.proto.copy

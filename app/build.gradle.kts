@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId = "com.esaudev.expensetracker"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -95,6 +95,10 @@ dependencies {
     implementation("androidx.room:room-runtime:2.5.2")
     implementation("androidx.room:room-ktx:2.5.2")
     ksp("androidx.room:room-compiler:2.5.2")
+
+    // Moshi
+    implementation("com.squareup.moshi:moshi:1.14.0")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
 
     // Dagger - Hilt
     implementation("com.google.dagger:hilt-android:2.48")

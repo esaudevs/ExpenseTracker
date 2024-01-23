@@ -1,4 +1,4 @@
-package com.esaudev.expensetracker.data.proto
+package com.esaudev.expensetracker.data.local.proto
 
 import android.content.Context
 import androidx.datastore.core.CorruptionException

@@ -7,6 +7,7 @@ import com.esaudev.expensetracker.domain.usecase.ValidateUserNameUseCase
 import com.esaudev.expensetracker.util.UiText
 import com.esaudev.expensetracker.util.UiTopLevelEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,31 +44,15 @@ class OnboardingViewModel @Inject constructor(
 
     private fun updateState(
         userName: String = _uiState.value.name,
-        errorMessage: UiText?
+        errorMessage: UiText? = null,
+        isLoading: Boolean = false
     ) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    name = userName,
-                    nameError = errorMessage
-                )
-            }
-        }
-    }
-
-    private suspend fun launchLoadingBlock(block: suspend () -> Unit) {
-        setLoading(true)
-        block()
-        setLoading(false)
-    }
-
-    private fun setLoading(isLoading: Boolean) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = isLoading
-                )
-            }
+        _uiState.update {
+            it.copy(
+                name = userName,
+                nameError = errorMessage,
+                isLoading = isLoading
+            )
         }
     }
 
@@ -83,11 +68,19 @@ class OnboardingViewModel @Inject constructor(
                 return@launch
             }
 
-            launchLoadingBlock {
+            updateState(
+                isLoading = true
+            )
+
+            async {
                 saveUserNameUseCase.execute(
                     userName = _uiState.value.name
                 )
-            }
+            }.await()
+
+            updateState(
+                isLoading = false
+            )
 
             _uiTopLevelEvent.send(UiTopLevelEvent.Success)
         }

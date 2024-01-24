@@ -142,7 +142,7 @@ fun TrackerContent(
     onPreviousMonth: () -> Unit,
     onExpenseClick: (Expense) -> Unit
 ) {
-    val showExpenseList = remember {
+    val showExpenseList = remember(uiState.expenses) {
         derivedStateOf { uiState.expenses.isNotEmpty() }
     }
 

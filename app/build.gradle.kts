@@ -91,6 +91,17 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    // Testing Mockk
+    testImplementation("com.willowtreeapps.assertk:assertk:0.26.1")
+    testImplementation("io.mockk:mockk:1.12.5")
+    androidTestImplementation("io.mockk:mockk-android:1.12.5")
+
+    // Turbine
+    testImplementation("app.cash.turbine:turbine:1.0.0")
+
+    // Testing Coroutines
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
     // Room
     implementation("androidx.room:room-runtime:2.5.2")
     implementation("androidx.room:room-ktx:2.5.2")

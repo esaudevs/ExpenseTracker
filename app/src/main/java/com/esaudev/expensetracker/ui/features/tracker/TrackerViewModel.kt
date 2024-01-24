@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -36,13 +35,13 @@ class TrackerViewModel @Inject constructor(
         viewModelScope.launch {
             queryState.collectLatest {
                 combine(
-                    userRepository.user.distinctUntilChanged(),
+                    userRepository.user,
                     expenseRepository.observeSumByMonth(
                         it.date.monthValue()
-                    ).distinctUntilChanged(),
+                    ),
                     expenseRepository.observeByMonth(
                         it.date.monthValue()
-                    ).distinctUntilChanged()
+                    )
                 ) { userModel, monthlyExpenses, expenses ->
                     TrackerUiState.WithContent(
                         userName = userModel.name,

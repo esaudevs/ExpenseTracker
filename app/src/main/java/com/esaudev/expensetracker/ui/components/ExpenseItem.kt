@@ -25,10 +25,12 @@ import java.time.LocalDateTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpenseItem(
+    modifier: Modifier = Modifier,
     expense: Expense,
     onClick: (Expense) -> Unit
 ) {
     Card(
+        modifier = modifier,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer

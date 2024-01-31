@@ -1,5 +1,6 @@
 package com.esaudev.expensetracker.ui.features.tracker
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -133,6 +134,7 @@ fun TrackerScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TrackerContent(
     modifier: Modifier = Modifier,
@@ -169,6 +171,8 @@ fun TrackerContent(
                     item.id
                 }) { index, expense ->
                     ExpenseItem(
+                        modifier = Modifier
+                            .animateItemPlacement(),
                         expense = expense,
                         onClick = onExpenseClick
                     )

@@ -6,8 +6,8 @@
     <string name="onboarding__empty_name_string">Name should not be empty</string>
     <string name="onboarding__name_bad_formatted">Name should not contains special characters</string>
 
-    <string name="previous_month_content_desc">Previous month icon</string>
-    <string name="next_month_content_desc">Next month icon</string>
+    <string name="previous_month_content_desc">Previous month</string>
+    <string name="next_month_content_desc">Next month</string>
 
     <string name="tracker__welcome_message">Welcome, %1$s</string>
     <string name="tracker__expenses_title">Expenses</string>

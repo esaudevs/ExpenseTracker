@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ExpenseTracker</string>
+    <string name="app_name">Expense Tracker</string>
 
     <string name="onboarding__how_can_we_call_you">What\'s your name?</string>
     <string name="onboarding__continue">Continue</string>

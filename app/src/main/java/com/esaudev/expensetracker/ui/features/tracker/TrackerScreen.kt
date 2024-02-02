@@ -25,7 +25,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +41,7 @@ import com.esaudev.expensetracker.ui.components.MonthSelector
 import com.esaudev.expensetracker.ui.components.MonthlyTotal
 import com.esaudev.expensetracker.ui.features.expenses.create.UpsertExpenseDialog
 import com.esaudev.expensetracker.ui.features.expenses.options.ExpenseOptionsBottomSheet
+import com.esaudev.expensetracker.ui.helpers.DialogWithContentState
 import java.time.LocalDateTime
 
 @Composable
@@ -71,40 +71,57 @@ fun TrackerScreen(
     onPreviousMonth: () -> Unit,
     onDeleteClick: (Expense) -> Unit
 ) {
-    var showCreateExpenseDialog: Pair<Boolean, Expense?> by remember {
+    var upsertExpenseDialogState by remember {
         mutableStateOf(
-            Pair(false, null)
+            DialogWithContentState<Expense>(
+                shouldBeVisible = false,
+                content = null
+            )
         )
     }
 
-    var openOptionSheetRequest: Pair<Boolean, Expense?> by rememberSaveable {
+    var optionsSheetState by remember {
         mutableStateOf(
-            Pair(false, null)
+            DialogWithContentState<Expense>(
+                shouldBeVisible = false,
+                content = null
+            )
         )
     }
 
-    if (showCreateExpenseDialog.first) {
+    if (upsertExpenseDialogState.shouldBeVisible) {
         UpsertExpenseDialog(
-            expense = showCreateExpenseDialog.second,
+            expense = upsertExpenseDialogState.content,
             onDismiss = {
-                showCreateExpenseDialog = Pair(false, null)
+                upsertExpenseDialogState = upsertExpenseDialogState.copy(
+                    shouldBeVisible = false
+                )
             }
         )
     }
 
-    if (openOptionSheetRequest.first) {
-        checkNotNull(openOptionSheetRequest.second)
+    if (optionsSheetState.shouldBeVisible) {
+        checkNotNull(optionsSheetState.content)
         ExpenseOptionsBottomSheet(
-            expense = openOptionSheetRequest.second!!,
+            expense = optionsSheetState.content!!,
             onDismissRequest = {
-                openOptionSheetRequest = Pair(false, null)
+                optionsSheetState = optionsSheetState.copy(
+                    shouldBeVisible = false
+                )
             },
             onEditClick = {
-                openOptionSheetRequest = Pair(false, null)
-                showCreateExpenseDialog = Pair(true, it)
+                optionsSheetState = optionsSheetState.copy(
+                    shouldBeVisible = false
+                )
+                upsertExpenseDialogState = upsertExpenseDialogState.copy(
+                    shouldBeVisible = true,
+                    content = it
+                )
             },
             onDeleteClick = {
-                openOptionSheetRequest = Pair(false, null)
+                optionsSheetState = optionsSheetState.copy(
+                    shouldBeVisible = false
+                )
                 onDeleteClick(it)
             }
         )
@@ -114,7 +131,10 @@ fun TrackerScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    showCreateExpenseDialog = Pair(true, null)
+                    upsertExpenseDialogState = upsertExpenseDialogState.copy(
+                        shouldBeVisible = true,
+                        content = null
+                    )
                 },
                 content = {
                     Icon(
@@ -140,7 +160,10 @@ fun TrackerScreen(
                     onNextMonth = onNextMonth,
                     onPreviousMonth = onPreviousMonth,
                     onExpenseClick = {
-                        openOptionSheetRequest = Pair(true, it)
+                        optionsSheetState = optionsSheetState.copy(
+                            shouldBeVisible = true,
+                            content = it
+                        )
                     }
                 )
             }

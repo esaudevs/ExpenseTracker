@@ -98,6 +98,7 @@ class OnboardingViewModelTest {
 
             val hideLoadingEmission = awaitItem()
             assertEquals(false, hideLoadingEmission.isLoading)
+            expectNoEvents()
         }
     }
 }

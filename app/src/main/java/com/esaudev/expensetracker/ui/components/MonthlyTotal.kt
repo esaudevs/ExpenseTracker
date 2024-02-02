@@ -20,7 +20,7 @@ import com.esaudev.expensetracker.R
 import com.esaudev.expensetracker.ui.theme.ExpenseTrackerTheme
 
 @Composable
-fun MonthlyExpenses(
+fun MonthlyTotal(
     amount: String
 ) {
     Card(
@@ -50,7 +50,7 @@ fun MonthlyExpenses(
 private fun MonthlyExpensesPreview() {
     ExpenseTrackerTheme {
         Surface {
-            MonthlyExpenses(amount = "999.99")
+            MonthlyTotal(amount = "999.99")
         }
     }
 }

@@ -11,7 +11,7 @@
 
     <string name="tracker__welcome_message">Welcome, %1$s</string>
     <string name="tracker__expenses_title">Expenses</string>
-    <string name="tracker__monthly_expenses_label">Monthly expenses</string>
+    <string name="tracker__monthly_expenses_label">Monthly total</string>
     <string name="tracker__monthly_expenses_amount">$ %1$s MXN</string>
     <string name="tracker__create_expense_icon_content_desc">Create expense button</string>
     <string name="tracker__empty_expenses">All your expenses for the month will appear here</string>

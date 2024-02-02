@@ -39,16 +39,16 @@ import com.esaudev.expensetracker.R
 import com.esaudev.expensetracker.domain.model.Expense
 import com.esaudev.expensetracker.ui.components.ExpenseItem
 import com.esaudev.expensetracker.ui.components.MonthSelector
-import com.esaudev.expensetracker.ui.components.MonthlyExpenses
+import com.esaudev.expensetracker.ui.components.MonthlyTotal
 import com.esaudev.expensetracker.ui.features.expenses.create.CreateExpenseDialog
 import com.esaudev.expensetracker.ui.features.expenses.options.ExpenseOptionsBottomSheet
+import java.time.LocalDateTime
 
 @Composable
 fun TrackerRoute(
     trackerViewModel: TrackerViewModel = hiltViewModel()
 ) {
     val uiState by trackerViewModel.uiState.collectAsStateWithLifecycle()
-    val queryState by trackerViewModel.queryState.collectAsStateWithLifecycle()
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -58,7 +58,6 @@ fun TrackerRoute(
 
     TrackerScreen(
         uiState = uiState,
-        queryState = queryState,
         onNextMonth = trackerViewModel::onNextMonth,
         onPreviousMonth = trackerViewModel::onPreviousMonth,
         onDeleteClick = trackerViewModel::onDeleteExpense
@@ -68,7 +67,6 @@ fun TrackerRoute(
 @Composable
 fun TrackerScreen(
     uiState: TrackerUiState,
-    queryState: ExpenseQueryState,
     onNextMonth: () -> Unit,
     onPreviousMonth: () -> Unit,
     onDeleteClick: (String) -> Unit
@@ -122,7 +120,6 @@ fun TrackerScreen(
                 TrackerContent(
                     modifier = Modifier.padding(paddingValues),
                     uiState = uiState,
-                    queryState = queryState,
                     onNextMonth = onNextMonth,
                     onPreviousMonth = onPreviousMonth,
                     onExpenseClick = {
@@ -139,7 +136,6 @@ fun TrackerScreen(
 fun TrackerContent(
     modifier: Modifier = Modifier,
     uiState: TrackerUiState.WithContent,
-    queryState: ExpenseQueryState,
     onNextMonth: () -> Unit,
     onPreviousMonth: () -> Unit,
     onExpenseClick: (Expense) -> Unit
@@ -157,7 +153,7 @@ fun TrackerContent(
         TrackerHeader(
             userName = uiState.userName,
             monthlyExpenses = uiState.monthlyExpenses,
-            queryState = queryState,
+            date = uiState.date,
             onNextMonth = onNextMonth,
             onPreviousMonth = onPreviousMonth
         )
@@ -204,7 +200,7 @@ fun TrackerContent(
 @Composable
 private fun TrackerHeader(
     userName: String,
-    queryState: ExpenseQueryState,
+    date: LocalDateTime,
     monthlyExpenses: String,
     onNextMonth: () -> Unit,
     onPreviousMonth: () -> Unit
@@ -223,14 +219,14 @@ private fun TrackerHeader(
 
         MonthSelector(
             modifier = Modifier.fillMaxWidth(),
-            date = queryState.date,
+            date = date,
             onPreviousMonth = onPreviousMonth,
             onNextMonth = onNextMonth
         )
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        MonthlyExpenses(amount = monthlyExpenses)
+        MonthlyTotal(amount = monthlyExpenses)
 
         Spacer(modifier = Modifier.height(16.dp))
 

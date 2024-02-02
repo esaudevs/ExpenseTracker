@@ -8,8 +8,3 @@ fun LocalDateTime.getMonthNameWithYear(): String {
     val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())
     return format(formatter)
 }
-
-fun LocalDateTime.monthValue(): String {
-    val formatter = DateTimeFormatter.ofPattern("MM")
-    return format(formatter)
-}

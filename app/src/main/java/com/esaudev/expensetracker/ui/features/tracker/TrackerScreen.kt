@@ -2,6 +2,7 @@ package com.esaudev.expensetracker.ui.features.tracker
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -36,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.esaudev.expensetracker.R
 import com.esaudev.expensetracker.domain.model.Expense
+import com.esaudev.expensetracker.ext.detectSwipe
 import com.esaudev.expensetracker.ui.components.ExpenseItem
 import com.esaudev.expensetracker.ui.components.MonthSelector
 import com.esaudev.expensetracker.ui.components.MonthlyTotal
@@ -184,54 +187,64 @@ fun TrackerContent(
         derivedStateOf { uiState.expenses.isNotEmpty() }
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .pointerInput(Unit) {
+                detectSwipe(
+                    onSwipeRight = onPreviousMonth,
+                    onSwipeLeft = onNextMonth
+                )
+            }
     ) {
-        TrackerHeader(
-            userName = uiState.userName,
-            monthlyExpenses = uiState.monthlyExpenses,
-            date = uiState.date,
-            onNextMonth = onNextMonth,
-            onPreviousMonth = onPreviousMonth
-        )
+        Column(
+            modifier = modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
+            TrackerHeader(
+                userName = uiState.userName,
+                monthlyExpenses = uiState.monthlyExpenses,
+                date = uiState.date,
+                onNextMonth = onNextMonth,
+                onPreviousMonth = onPreviousMonth
+            )
 
-        if (showExpenseList.value) {
-            LazyColumn(
-                modifier = Modifier,
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                itemsIndexed(uiState.expenses, key = { _, item ->
-                    item.id
-                }) { index, expense ->
-                    ExpenseItem(
-                        modifier = Modifier
-                            .animateItemPlacement(),
-                        expense = expense,
-                        onClick = onExpenseClick
-                    )
+            if (showExpenseList.value) {
+                LazyColumn(
+                    modifier = Modifier,
+                    contentPadding = PaddingValues(16.dp)
+                ) {
+                    itemsIndexed(uiState.expenses, key = { _, item ->
+                        item.id
+                    }) { index, expense ->
+                        ExpenseItem(
+                            modifier = Modifier
+                                .animateItemPlacement(),
+                            expense = expense,
+                            onClick = onExpenseClick
+                        )
 
-                    if (index != uiState.expenses.lastIndex) {
-                        Spacer(modifier = Modifier.height(6.dp))
+                        if (index != uiState.expenses.lastIndex) {
+                            Spacer(modifier = Modifier.height(6.dp))
+                        }
                     }
                 }
-            }
-        } else {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(id = R.string.tracker__empty_expenses),
-                    modifier = Modifier.padding(
-                        horizontal = 64.dp
-                    ),
-                    style = MaterialTheme.typography.labelLarge,
-                    textAlign = TextAlign.Center
-                )
+            } else {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.tracker__empty_expenses),
+                        modifier = Modifier.padding(
+                            horizontal = 64.dp
+                        ),
+                        style = MaterialTheme.typography.labelLarge,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }

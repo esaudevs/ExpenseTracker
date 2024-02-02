@@ -1,6 +1,9 @@
 package com.esaudev.expensetracker.ui.features.tracker
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -187,14 +191,30 @@ fun TrackerContent(
         derivedStateOf { uiState.expenses.isNotEmpty() }
     }
 
+    val swipeDirection = remember {
+        mutableIntStateOf(-1)
+    }
+
     Box(
-        modifier = Modifier.fillMaxSize()
-            .pointerInput(Unit) {
-                detectSwipe(
-                    onSwipeRight = onPreviousMonth,
-                    onSwipeLeft = onNextMonth
-                )
-            }
+        modifier = Modifier
+            .fillMaxSize()
+            .draggable(
+                state = rememberDraggableState(
+                    onDelta = {
+                        when {
+                            it > 0 -> swipeDirection.intValue = 0
+                            it < 0 -> swipeDirection.intValue = 1
+                        }
+                    }
+                ),
+                onDragStopped = {
+                    when (swipeDirection.intValue) {
+                        0 -> onPreviousMonth()
+                        1 -> onNextMonth()
+                    }
+                },
+                orientation = Orientation.Horizontal
+            )
     ) {
         Column(
             modifier = modifier

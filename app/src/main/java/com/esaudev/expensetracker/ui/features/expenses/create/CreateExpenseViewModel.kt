@@ -55,6 +55,14 @@ class CreateExpenseViewModel @Inject constructor(
         }
     }
 
+    fun onDateChange(paidAt: LocalDateTime) {
+        _uiState.update {
+            it.copy(
+                paidAt = paidAt
+            )
+        }
+    }
+
     fun onCreateExpense() {
         viewModelScope.launch {
             val conceptValidation =

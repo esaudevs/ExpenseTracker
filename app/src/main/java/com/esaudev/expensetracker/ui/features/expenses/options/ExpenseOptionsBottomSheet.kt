@@ -14,16 +14,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.esaudev.expensetracker.R
+import com.esaudev.expensetracker.domain.model.Expense
 import com.esaudev.expensetracker.ui.components.OutlinedProgressButton
 import com.esaudev.expensetracker.ui.components.ProgressButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpenseOptionsBottomSheet(
-    expenseId: String,
+    expense: Expense,
     onDismissRequest: () -> Unit,
-    onDeleteClick: (String) -> Unit,
-    onEditClick: () -> Unit
+    onDeleteClick: (Expense) -> Unit,
+    onEditClick: (Expense) -> Unit
 ) {
     ModalBottomSheet(onDismissRequest = onDismissRequest) {
         Column(
@@ -46,7 +47,9 @@ fun ExpenseOptionsBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 isLoading = false,
                 text = stringResource(id = R.string.expense_options__edit),
-                onClick = onEditClick
+                onClick = {
+                    onEditClick(expense)
+                }
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -56,7 +59,7 @@ fun ExpenseOptionsBottomSheet(
                 isLoading = false,
                 text = stringResource(id = R.string.expense_options__delete),
                 onClick = {
-                    onDeleteClick(expenseId)
+                    onDeleteClick(expense)
                 }
             )
         }

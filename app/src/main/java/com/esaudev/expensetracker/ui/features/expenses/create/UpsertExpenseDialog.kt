@@ -16,6 +16,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -33,6 +34,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.esaudev.expensetracker.R
+import com.esaudev.expensetracker.domain.model.Expense
 import com.esaudev.expensetracker.ui.components.MonthCard
 import com.esaudev.expensetracker.ui.components.ProgressButton
 import com.esaudev.expensetracker.ui.helpers.ObserveAsEvents
@@ -47,12 +49,19 @@ import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateExpenseDialog(
+fun UpsertExpenseDialog(
+    expense: Expense? = null,
     onDismiss: () -> Unit,
-    viewModel: CreateExpenseViewModel = hiltViewModel()
+    viewModel: UpsertExpenseViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val calendarState = rememberSheetState()
+
+    LaunchedEffect(key1 = expense) {
+        if (expense != null) {
+            viewModel.initExpense(expense)
+        }
+    }
 
     CalendarDialog(
         state = calendarState,
@@ -70,11 +79,12 @@ fun CreateExpenseDialog(
                 viewModel.clearUiState()
                 onDismiss()
             }
+
             else -> Unit
         }
     }
 
-    CreateExpenseDialog(
+    UpsertExpenseDialog(
         createExpenseUiState = uiState,
         onDismiss = {
             viewModel.clearUiState()
@@ -83,20 +93,20 @@ fun CreateExpenseDialog(
         onAmountChange = viewModel::onAmountChange,
         onConceptChange = viewModel::onConceptChange,
         onCreateExpense = viewModel::onCreateExpense,
-        onPaitAtClick = {
+        onPaidAtClick = {
             calendarState.show()
         }
     )
 }
 
 @Composable
-fun CreateExpenseDialog(
-    createExpenseUiState: CreateExpenseViewModel.CreateExpenseUiState,
+fun UpsertExpenseDialog(
+    createExpenseUiState: UpsertExpenseViewModel.CreateExpenseUiState,
     onDismiss: () -> Unit,
     onAmountChange: (String) -> Unit,
     onConceptChange: (String) -> Unit,
     onCreateExpense: () -> Unit,
-    onPaitAtClick: () -> Unit
+    onPaidAtClick: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
 
@@ -111,7 +121,7 @@ fun CreateExpenseDialog(
             )
         },
         text = {
-            CreateExpenseDialogContent(
+            UpsertExpenseDialogContent(
                 amountValue = createExpenseUiState.amount,
                 conceptValue = createExpenseUiState.concept,
                 amountError = createExpenseUiState.amountError,
@@ -119,7 +129,7 @@ fun CreateExpenseDialog(
                 onAmountChange = onAmountChange,
                 onConceptChange = onConceptChange,
                 paidAt = createExpenseUiState.paidAt,
-                onPaidAtClick = onPaitAtClick
+                onPaidAtClick = onPaidAtClick
             )
         },
         confirmButton = {
@@ -132,9 +142,9 @@ fun CreateExpenseDialog(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CreateExpenseDialogContent(
+fun UpsertExpenseDialogContent(
     amountValue: String,
     conceptValue: String,
     paidAt: LocalDateTime,
@@ -234,7 +244,7 @@ fun CreateExpenseDialogContent(
 private fun CreateExpenseDialogContentPreview() {
     ExpenseTrackerTheme {
         Surface {
-            CreateExpenseDialogContent(
+            UpsertExpenseDialogContent(
                 amountValue = "",
                 conceptValue = "",
                 paidAt = LocalDateTime.now(),

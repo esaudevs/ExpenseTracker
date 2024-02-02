@@ -55,9 +55,9 @@ class TrackerViewModel @Inject constructor(
         expenseRepository.queryToPreviousMonth()
     }
 
-    fun onDeleteExpense(id: String) {
+    fun onDeleteExpense(expense: Expense) {
         viewModelScope.launch {
-            expenseRepository.deleteById(id)
+            expenseRepository.deleteById(expense.id)
         }
     }
 }

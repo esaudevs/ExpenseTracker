@@ -17,10 +17,11 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateExpenseViewModel @Inject constructor(
+class UpsertExpenseViewModel @Inject constructor(
     private val createExpenseUseCase: CreateExpenseUseCase,
     private val validateConceptUseCase: ValidateConceptUseCase,
     private val validateAmountUseCase: ValidateAmountUseCase
@@ -32,6 +33,17 @@ class CreateExpenseViewModel @Inject constructor(
 
     private val _uiTopLevelEvent = Channel<UiTopLevelEvent>()
     val uiTopLevelEvent = _uiTopLevelEvent.receiveAsFlow()
+
+    fun initExpense(expense: Expense) {
+        _uiState.update {
+            it.copy(
+                amount = expense.amount,
+                concept = expense.concept,
+                id = expense.id,
+                paidAt = expense.paidAt
+            )
+        }
+    }
 
     fun onAmountChange(amount: String) {
         viewModelScope.launch {
@@ -83,6 +95,7 @@ class CreateExpenseViewModel @Inject constructor(
 
             createExpenseUseCase.execute(
                 expense = Expense(
+                    id = _uiState.value.id ?: UUID.randomUUID().toString(),
                     concept = _uiState.value.concept,
                     amount = _uiState.value.amount,
                     paidAt = _uiState.value.paidAt
@@ -102,6 +115,7 @@ class CreateExpenseViewModel @Inject constructor(
     }
 
     data class CreateExpenseUiState(
+        val id: String? = null,
         val amount: String = "",
         val concept: String = "",
         val paidAt: LocalDateTime = LocalDateTime.now(),

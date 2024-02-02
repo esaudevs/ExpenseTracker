@@ -40,7 +40,7 @@ import com.esaudev.expensetracker.domain.model.Expense
 import com.esaudev.expensetracker.ui.components.ExpenseItem
 import com.esaudev.expensetracker.ui.components.MonthSelector
 import com.esaudev.expensetracker.ui.components.MonthlyTotal
-import com.esaudev.expensetracker.ui.features.expenses.create.CreateExpenseDialog
+import com.esaudev.expensetracker.ui.features.expenses.create.UpsertExpenseDialog
 import com.esaudev.expensetracker.ui.features.expenses.options.ExpenseOptionsBottomSheet
 import java.time.LocalDateTime
 
@@ -69,25 +69,42 @@ fun TrackerScreen(
     uiState: TrackerUiState,
     onNextMonth: () -> Unit,
     onPreviousMonth: () -> Unit,
-    onDeleteClick: (String) -> Unit
+    onDeleteClick: (Expense) -> Unit
 ) {
-    var showCreateExpenseDialog by rememberSaveable { mutableStateOf(false) }
-    var openOptionSheetRequest by rememberSaveable { mutableStateOf(Pair(false, "")) }
+    var showCreateExpenseDialog: Pair<Boolean, Expense?> by remember {
+        mutableStateOf(
+            Pair(false, null)
+        )
+    }
 
-    if (showCreateExpenseDialog) {
-        CreateExpenseDialog(onDismiss = { showCreateExpenseDialog = false })
+    var openOptionSheetRequest: Pair<Boolean, Expense?> by rememberSaveable {
+        mutableStateOf(
+            Pair(false, null)
+        )
+    }
+
+    if (showCreateExpenseDialog.first) {
+        UpsertExpenseDialog(
+            expense = showCreateExpenseDialog.second,
+            onDismiss = {
+                showCreateExpenseDialog = Pair(false, null)
+            }
+        )
     }
 
     if (openOptionSheetRequest.first) {
+        checkNotNull(openOptionSheetRequest.second)
         ExpenseOptionsBottomSheet(
-            expenseId = openOptionSheetRequest.second,
+            expense = openOptionSheetRequest.second!!,
             onDismissRequest = {
-                openOptionSheetRequest = Pair(false, "")
+                openOptionSheetRequest = Pair(false, null)
             },
             onEditClick = {
+                openOptionSheetRequest = Pair(false, null)
+                showCreateExpenseDialog = Pair(true, it)
             },
             onDeleteClick = {
-                openOptionSheetRequest = Pair(false, "")
+                openOptionSheetRequest = Pair(false, null)
                 onDeleteClick(it)
             }
         )
@@ -97,7 +114,7 @@ fun TrackerScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    showCreateExpenseDialog = true
+                    showCreateExpenseDialog = Pair(true, null)
                 },
                 content = {
                     Icon(
@@ -123,7 +140,7 @@ fun TrackerScreen(
                     onNextMonth = onNextMonth,
                     onPreviousMonth = onPreviousMonth,
                     onExpenseClick = {
-                        openOptionSheetRequest = Pair(true, it.id)
+                        openOptionSheetRequest = Pair(true, it)
                     }
                 )
             }
@@ -140,7 +157,7 @@ fun TrackerContent(
     onPreviousMonth: () -> Unit,
     onExpenseClick: (Expense) -> Unit
 ) {
-    val showExpenseList = remember(uiState.expenses) {
+    val showExpenseList = remember(uiState.expenses.isNotEmpty()) {
         derivedStateOf { uiState.expenses.isNotEmpty() }
     }
 

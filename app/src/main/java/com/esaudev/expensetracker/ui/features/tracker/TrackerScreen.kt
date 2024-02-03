@@ -1,9 +1,6 @@
 package com.esaudev.expensetracker.ui.features.tracker
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,15 +22,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -42,7 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.esaudev.expensetracker.R
 import com.esaudev.expensetracker.domain.model.Expense
-import com.esaudev.expensetracker.ext.detectSwipe
+import com.esaudev.expensetracker.ext.swappableHorizontally
 import com.esaudev.expensetracker.ui.components.ExpenseItem
 import com.esaudev.expensetracker.ui.components.MonthSelector
 import com.esaudev.expensetracker.ui.components.MonthlyTotal
@@ -187,33 +181,12 @@ fun TrackerContent(
     onPreviousMonth: () -> Unit,
     onExpenseClick: (Expense) -> Unit
 ) {
-    val showExpenseList = remember(uiState.expenses.isNotEmpty()) {
-        derivedStateOf { uiState.expenses.isNotEmpty() }
-    }
-
-    val swipeDirection = remember {
-        mutableIntStateOf(-1)
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .draggable(
-                state = rememberDraggableState(
-                    onDelta = {
-                        when {
-                            it > 0 -> swipeDirection.intValue = 0
-                            it < 0 -> swipeDirection.intValue = 1
-                        }
-                    }
-                ),
-                onDragStopped = {
-                    when (swipeDirection.intValue) {
-                        0 -> onPreviousMonth()
-                        1 -> onNextMonth()
-                    }
-                },
-                orientation = Orientation.Horizontal
+            .swappableHorizontally(
+                onSwipeRight = onPreviousMonth,
+                onSwipeLeft = onNextMonth
             )
     ) {
         Column(
@@ -230,7 +203,7 @@ fun TrackerContent(
                 onPreviousMonth = onPreviousMonth
             )
 
-            if (showExpenseList.value) {
+            if (uiState.expenses.isNotEmpty()) {
                 LazyColumn(
                     modifier = Modifier,
                     contentPadding = PaddingValues(16.dp)
